@@ -1,2 +1,2 @@
-export {Button} from './button';
-export {Frame} from './frame';
+export { Button } from './button';
+export { Frame } from './frame';
