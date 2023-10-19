@@ -1,14 +1,10 @@
 import Konva from 'konva';
+import {Button, Frame} from './ui/components';
 
-import {button} from './ui/button';
+const work = new Frame({width: 400, height: 600, border: {width: 1}});
+const button = new Button({text: 'i am button', color: 'red'});
 
-const testButton = button({
-    text: 'hello pidor',
-    x: 100,
-    y: 100,
-    color: 'red',
-});
-
+work.render(button, {x: 40, y: 200});
 
 const stage = new Konva.Stage({
     container: 'container',
@@ -16,25 +12,11 @@ const stage = new Konva.Stage({
     height: window.innerHeight,
 });
 
-const group = new Konva.Group({});
+const layer = new Konva.Layer({
+    width: stage.width(),
+    height: stage.height(),
+});
 
+work.attach(layer, {x: 0, y: 0});
 
-const leftSide = new Konva.Group({
-    width: 400,
-    height: 400,
-    id: 'pidor1',
-}).add(new Konva.Rect({width: 400, height: 400, fill: 'green'}));
-
-
-const rightSide = new Konva.Group({
-    x: 400,
-    width: 400,
-    height: 400,
-    id: 'pidor2',
-}).add(new Konva.Rect({width: 400, height: 400, fill: 'red'}));
-
-group.add(leftSide, rightSide, testButton);
-
-testButton.on('click', () => console.log(testButton.getLayer()?.attrs));
-
-
+stage.add(layer);

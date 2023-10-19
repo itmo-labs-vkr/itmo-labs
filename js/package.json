@@ -7,13 +7,15 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint:fix": "eslint --fix ."
   },
   "license": "ISC",
   "devDependencies": {
-    "@diplodoc/eslint-config": "^1.0.14",
+    "@diplodoc/eslint-config": "^1.0.15",
+    "@diplodoc/prettier-config": "^1.0.0",
     "eslint": "^8.51.0",
+    "eslint-define-config": "^1.24.1",
+    "prettier": "^3.0.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2",
     "vite": "^4.4.11"
