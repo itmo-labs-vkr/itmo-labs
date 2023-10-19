@@ -109,7 +109,7 @@ class BaseComponent<T extends {} = {}> extends Konva.Group implements IBaseCompo
         const {x, y} = at;
         const element = component.mount();
 
-        element.x(x).y(y);
+        element.x(x).y(y).zIndex(100);
 
         this.add(element);
 
