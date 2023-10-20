@@ -6,10 +6,13 @@ type ButtonConfig = {
     text: string;
     color?: string;
     fill?: string;
+    width?: number;
+    height?: number;
 };
 
 class Button extends BaseComponent<ButtonConfig> {
     build(): Button {
+        this.name('chlen');
         const {fill, color, text} = this._props;
 
         const message = text.trim();

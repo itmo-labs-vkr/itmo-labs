@@ -76,7 +76,12 @@ function applyDefaultProps<T extends Config>(props: T, defaultProps: Record<stri
     return result as T;
 }
 
-class BaseComponent<T extends {} = {}> extends Konva.Group implements IBaseComponent<T> {
+type BaseProps = {
+    width?: number;
+    height?: number;
+};
+
+class BaseComponent<T extends BaseProps = {}> extends Konva.Group implements IBaseComponent<T> {
     static defaultProps: Record<string, unknown>;
 
     _handlers: EventHandlers<unknown> = {};
@@ -84,12 +89,23 @@ class BaseComponent<T extends {} = {}> extends Konva.Group implements IBaseCompo
 
     protected _element: Konva.Group | undefined;
 
-    constructor(props: Partial<T>) {
+    constructor(props: Partial<T & Konva.ShapeConfig>) {
         super();
+
         // ngl this is bad
         // @ts-ignore
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this._props = applyDefaultProps(props, this.constructor.defaultProps);
+
+        const {width, height} = this._props;
+
+        if (width) {
+            this.width(width);
+        }
+
+        if (height) {
+            this.height(height);
+        }
     }
 
     registerCallback<Event extends EventName>(
@@ -105,7 +121,7 @@ class BaseComponent<T extends {} = {}> extends Konva.Group implements IBaseCompo
         this.on(name, callback);
     }
 
-    render(component: BaseComponent, at: Point2D): boolean {
+    render(component: BaseComponent, at: Point2D = {x: 0, y: 0}): boolean {
         const {x, y} = at;
         const element = component.mount();
 
@@ -116,7 +132,7 @@ class BaseComponent<T extends {} = {}> extends Konva.Group implements IBaseCompo
         return true;
     }
 
-    attach(layer: Konva.Layer, at: Point2D): boolean {
+    attach(layer: Konva.Layer, at: Point2D = {x: 0, y: 0}): boolean {
         const {x, y} = at;
         const element = this.mount();
 
