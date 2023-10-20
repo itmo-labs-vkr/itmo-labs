@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import {Button, ConnectableComponent, Frame, Presets, TestComponent} from '../ui/components';
+import {Button, ConnectableComponent, Frame, TestComponent} from '../ui/components';
 import {BaseLayer} from './layers';
 
 type Config = {
@@ -73,7 +73,7 @@ class App {
 
         equipmentLayer.add();
 
-        const button = new Button({text: 'я кнопка'});
+        const button = new Button({text: 'добавить кнопку'});
 
         button.attach(workLayer, {x: 100, y: 200});
 
@@ -99,10 +99,6 @@ class App {
         button.registerCallback('click', () => {
             test.forEach((node) => (node as ConnectableComponent).toggle());
         });
-
-        const hui = new Presets.da({width: 300, height: 200, draggable: true});
-
-        hui.attach(workLayer);
     }
 }
 

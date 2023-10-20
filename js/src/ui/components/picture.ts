@@ -23,8 +23,10 @@ const pictureFactory = (src: string) =>
 
 const Presets = {
     Battery: pictureFactory('norm.jpeg'),
-    from(src: string) {
-        return pictureFactory(src);
+    from(props: PictureConfig & Konva.ShapeConfig): BaseComponent<PictureConfig> {
+        const Cls = pictureFactory(props.src);
+
+        return new Cls(props);
     },
     da: pictureFactory('giga.png'),
 };
