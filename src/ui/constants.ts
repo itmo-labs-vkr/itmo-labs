@@ -13,4 +13,9 @@ declare global {
         x: number;
         y: number;
     };
+
+    export type RequireGeometry<T> = T & {
+        width: number;
+        height: number;
+    };
 }

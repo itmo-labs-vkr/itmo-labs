@@ -1,6 +1,7 @@
 import Konva from 'konva';
-import {Button, ConnectableComponent, Frame, TestComponent} from '../ui/components';
-import {BaseLayer} from './layers';
+import {Button, ConnectableComponent, Frame, TestComponent} from '@labs/components';
+import {BaseLayer} from '@labs/layers';
+import {state} from '@labs/state';
 
 type Config = {
     width: number;
@@ -9,28 +10,34 @@ type Config = {
 };
 
 class App {
-    config: Config;
     root: Konva.Stage;
     sizes: Record<'workspace' | 'equipment', {width: number; height: number}>;
 
     constructor(config: Config) {
-        this.config = config;
         this.root = new Konva.Stage(config);
+
+        state.setup(config);
+
+        const {
+            geometry: {width, height},
+        } = state.config();
 
         this.sizes = {
             workspace: {
-                width: this.config.width * 0.75,
-                height: this.config.height,
+                width: width * 0.75,
+                height: height,
             },
             equipment: {
-                width: this.config.width * 0.25,
-                height: this.config.height,
+                width: width * 0.25,
+                height: height,
             },
         };
     }
 
     initializeBackgroundLayer() {
-        const {width, height} = this.config;
+        const {
+            geometry: {width, height},
+        } = state.config();
 
         const background = new Konva.Layer({width, height});
         const frame = new Frame({
@@ -82,13 +89,14 @@ class App {
         this.root.add(backgroundLayer, workLayer, equipmentLayer);
 
         const connectable1 = new TestComponent(['top-middle', 'bottom-middle'], {
-            width: 100,
-            height: 200,
+            width: 1,
+            height: 2,
+            radius: 100,
         });
 
         const connectable2 = new TestComponent(['top-middle', 'bottom-middle'], {
-            width: 100,
-            height: 200,
+            width: 2,
+            height: 2,
         });
 
         connectable1.attach(workLayer, {x: 100, y: 300});

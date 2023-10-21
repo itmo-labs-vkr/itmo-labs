@@ -1,4 +1,4 @@
-/** @type {import('eslint-define-config').ESLintConfig}*/
+/** @type {import('eslint-define-config').ESLintConfig} */
 module.exports = {
     extends: ['@diplodoc/eslint-config', '@diplodoc/eslint-config/prettier'],
     overrides: [

@@ -10,7 +10,14 @@
     "allowJs": false,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@labs/app": ["./app/index.ts"],
+      "@labs/components": ["./ui/components/index.ts"],
+      "@labs/layers": ["./ui/layers/index.ts"],
+      "@labs/utils": ["./utils/index.ts"],
+      "@labs/state": ["./state/index.ts"]
+    }
   },
   "include": ["src"]
 }

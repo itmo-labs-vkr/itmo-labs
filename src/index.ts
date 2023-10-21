@@ -1,4 +1,4 @@
-import {App} from './app';
+import {App} from '@labs/app';
 
 const app = new App({
     container: 'root',

@@ -1,7 +1,14 @@
 import Konva from 'konva';
+import {state} from '@labs/state';
+import {assert} from '@labs/utils';
+
+type RequiredProps = {
+    width: number;
+    height: number;
+};
 
 interface IBaseComponent<AddtitionalProperties extends {} = {}> {
-    _props: AddtitionalProperties;
+    _props: AddtitionalProperties & RequiredProps;
     defaultProps?: AddtitionalProperties;
     registerCallback<Event extends EventName>(
         name: Event,
@@ -76,17 +83,13 @@ function applyDefaultProps<T extends Config>(props: T, defaultProps: Record<stri
     return result as T;
 }
 
-type BaseProps = {
-    width?: number;
-    height?: number;
-};
-
-class BaseComponent<T extends BaseProps = {}> extends Konva.Group implements IBaseComponent<T> {
+class BaseComponent<T extends {} = RequiredProps> extends Konva.Group implements IBaseComponent<T> {
     static defaultProps: Record<string, unknown>;
 
     _handlers: EventHandlers<unknown> = {};
-    _props: T;
+    _props: T & RequiredProps;
 
+    protected _position: Point2D | undefined;
     protected _element: Konva.Group | undefined;
 
     constructor(props: Partial<T & Konva.ShapeConfig>) {
@@ -98,14 +101,32 @@ class BaseComponent<T extends BaseProps = {}> extends Konva.Group implements IBa
         this._props = applyDefaultProps(props, this.constructor.defaultProps);
 
         const {width, height} = this._props;
+        const {width: widthPx, height: heightPx} = state.size(width, height);
 
-        if (width) {
-            this.width(width);
-        }
+        this.width(widthPx);
+        this.height(heightPx);
 
-        if (height) {
-            this.height(height);
-        }
+        this.registerCallback('dragstart', () => {
+            assert(typeof this._position === 'undefined');
+
+            this._position = this.getAbsolutePosition();
+        });
+
+        this.registerCallback('dragend', () => {
+            assert(typeof this._position !== 'undefined');
+
+            const {
+                // eslint-disable-next-line @typescript-eslint/no-shadow
+                cell: {width, height},
+            } = state.config();
+
+            const {x, y} = this.getAbsolutePosition();
+
+            this.x(x - (x % width));
+            this.y(y - (y % height));
+
+            this._position = undefined;
+        });
     }
 
     registerCallback<Event extends EventName>(
