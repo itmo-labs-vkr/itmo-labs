@@ -80,7 +80,7 @@ class App {
 
         equipmentLayer.add();
 
-        const button = new Button({text: 'добавить кнопку'});
+        const button = new Button({text: 'добавить кнопку', measure: [2, 1], draggable: true});
 
         button.attach(workLayer, {x: 100, y: 200});
 
@@ -89,17 +89,15 @@ class App {
         this.root.add(backgroundLayer, workLayer, equipmentLayer);
 
         const connectable1 = new TestComponent(['top-middle', 'bottom-middle'], {
-            width: 1,
-            height: 2,
-            radius: 100,
+            measure: [1, 1],
         });
 
         const connectable2 = new TestComponent(['top-middle', 'bottom-middle'], {
-            width: 2,
-            height: 2,
+            width: 200,
+            height: 200,
         });
 
-        connectable1.attach(workLayer, {x: 100, y: 300});
+        connectable1.attach(workLayer, [4, 0]);
         connectable2.attach(workLayer, {x: 400, y: 300});
 
         const test = this.root.find('.connectable') as ConnectableComponent[];

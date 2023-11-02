@@ -11,8 +11,6 @@ type ConnectPosition = `${VerticalAxis}-${HorizontalAxis}` | {x: number; y: numb
 type AllowedConnections = ConnectPosition[];
 
 type Props = {
-    width: number;
-    height: number;
     radius?: number;
     fill?: string;
     fillHover?: string;
@@ -74,7 +72,7 @@ class ConnectableComponent<T extends Props = Props> extends BaseComponent<T> {
     protected _shouldRender = false;
     protected _uid: string;
 
-    constructor(allowedConnections: AllowedConnections, props: T) {
+    constructor(allowedConnections: AllowedConnections, props: ComponentProps<T>) {
         super(props);
 
         this.name(`${this.name()} connectable`);

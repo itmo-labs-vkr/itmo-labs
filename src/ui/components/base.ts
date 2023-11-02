@@ -2,11 +2,6 @@ import Konva from 'konva';
 import {state} from '@labs/state';
 import {assert} from '@labs/utils';
 
-type RequiredProps = {
-    width: number;
-    height: number;
-};
-
 interface IBaseComponent<AddtitionalProperties extends {} = {}> {
     _props: AddtitionalProperties & RequiredProps;
     defaultProps?: AddtitionalProperties;
@@ -86,25 +81,34 @@ function applyDefaultProps<T extends Config>(props: T, defaultProps: Record<stri
 class BaseComponent<T extends {} = RequiredProps> extends Konva.Group implements IBaseComponent<T> {
     static defaultProps: Record<string, unknown>;
 
+    protected static _extractSizeFromProps(props: RequiredProps) {
+        if ('measure' in props) {
+            const [widthInCells, heigthInCells] = props.measure;
+
+            return state.size(widthInCells, heigthInCells);
+        }
+
+        return props;
+    }
+
     _handlers: EventHandlers<unknown> = {};
     _props: T & RequiredProps;
 
     protected _position: Point2D | undefined;
     protected _element: Konva.Group | undefined;
 
-    constructor(props: Partial<T & Konva.ShapeConfig>) {
-        super();
+    constructor(props: ComponentProps<T>) {
+        super(props);
 
         // ngl this is bad
         // @ts-ignore
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this._props = applyDefaultProps(props, this.constructor.defaultProps);
 
-        const {width, height} = this._props;
-        const {width: widthPx, height: heightPx} = state.size(width, height);
+        const {width, height} = BaseComponent._extractSizeFromProps(this._props);
 
-        this.width(widthPx);
-        this.height(heightPx);
+        this.width(width);
+        this.height(height);
 
         this.registerCallback('dragstart', () => {
             assert(typeof this._position === 'undefined');
@@ -142,19 +146,28 @@ class BaseComponent<T extends {} = RequiredProps> extends Konva.Group implements
         this.on(name, callback);
     }
 
-    render(component: BaseComponent, at: Point2D = {x: 0, y: 0}): boolean {
-        const {x, y} = at;
-        const element = component.mount();
+    render(
+        component: BaseComponent | Konva.Group,
+        at: Point2D | BoardPosition = {x: 0, y: 0},
+    ): boolean {
+        const {width: x, height: y} = Array.isArray(at)
+            ? state.size(...at)
+            : {width: at.x, height: at.y};
 
-        element.x(x).y(y).zIndex(100);
+        const element = component instanceof BaseComponent ? component.mount() : component;
+
+        element.x(x).y(y);
 
         this.add(element);
 
         return true;
     }
 
-    attach(layer: Konva.Layer, at: Point2D = {x: 0, y: 0}): boolean {
-        const {x, y} = at;
+    attach(layer: Konva.Layer, at: Point2D | BoardPosition = {x: 0, y: 0}): boolean {
+        const {width: x, height: y} = Array.isArray(at)
+            ? state.size(...at)
+            : {width: at.x, height: at.y};
+
         const element = this.mount();
 
         element.x(x).y(y);

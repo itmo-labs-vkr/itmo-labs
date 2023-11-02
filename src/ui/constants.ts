@@ -14,8 +14,21 @@ declare global {
         y: number;
     };
 
+    export type BoardPosition = [number, number];
+
     export type RequireGeometry<T> = T & {
         width: number;
         height: number;
     };
+
+    type RequiredProps =
+        | {
+              width: number;
+              height: number;
+          }
+        | {
+              measure: [number, number];
+          };
+
+    export type ComponentProps<T = {}> = T & RequiredProps & Partial<Konva.ShapeConfig>;
 }

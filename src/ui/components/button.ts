@@ -12,11 +12,9 @@ type ButtonConfig = {
 
 class Button extends BaseComponent<ButtonConfig> {
     build(): Button {
-        this.name('chlen');
         const {fill, color, text} = this._props;
 
         const message = text.trim();
-
         const content = new Konva.Text({
             text: message,
             fontSize: FONT_SIZE,
@@ -26,8 +24,8 @@ class Button extends BaseComponent<ButtonConfig> {
         });
 
         const axis = {
-            width: content.width() * 2,
-            height: content.height() * 2,
+            width: this.width(),
+            height: this.height(),
         };
 
         const background = new Konva.Rect({...axis, fill, cornerRadius: 5});
