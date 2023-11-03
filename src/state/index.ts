@@ -1,3 +1,6 @@
+import {setup as setupEquipment} from './configuration';
+import {Configuration} from './types';
+
 type Geometry = {
     width: number;
     height: number;
@@ -9,10 +12,17 @@ const config = {
         height: 100,
     },
     geometry: {} as Geometry,
+    equipment: {} as Configuration,
 };
 
-function setup(geometry: Geometry) {
+async function setup(geometry: Geometry) {
     Object.assign(config.geometry, geometry);
+
+    const equipment = await setupEquipment();
+
+    for (const entity of equipment) {
+        config.equipment[entity.name] = entity;
+    }
 }
 
 function size(xCells: number, yCells: number): Geometry {

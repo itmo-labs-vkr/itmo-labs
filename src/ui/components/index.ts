@@ -4,4 +4,4 @@ export {Button} from './button';
 export {Frame} from './frame';
 export {ConnectableComponent} from './connectable';
 export {TestComponent} from './test';
-export {Presets} from './picture';
+export {Picture} from './picture';

@@ -1,7 +1,8 @@
 import Konva from 'konva';
-import {Button, ConnectableComponent, Frame, TestComponent} from '@labs/components';
+import {Button, Frame} from '@labs/components';
 import {BaseLayer} from '@labs/layers';
 import {state} from '@labs/state';
+import {renderEquipment} from 'ui';
 
 type Config = {
     width: number;
@@ -11,27 +12,12 @@ type Config = {
 
 class App {
     root: Konva.Stage;
-    sizes: Record<'workspace' | 'equipment', {width: number; height: number}>;
+    config: Config;
+    sizes!: Record<'workspace' | 'equipment', {width: number; height: number}>;
 
     constructor(config: Config) {
         this.root = new Konva.Stage(config);
-
-        state.setup(config);
-
-        const {
-            geometry: {width, height},
-        } = state.config();
-
-        this.sizes = {
-            workspace: {
-                width: width * 0.75,
-                height: height,
-            },
-            equipment: {
-                width: width * 0.25,
-                height: height,
-            },
-        };
+        this.config = config;
     }
 
     initializeBackgroundLayer() {
@@ -73,7 +59,24 @@ class App {
         return equipmentLayer;
     }
 
-    run() {
+    async run() {
+        await state.setup(this.config);
+
+        const {
+            geometry: {width, height},
+        } = state.config();
+
+        this.sizes = {
+            workspace: {
+                width: width * 0.75,
+                height: height,
+            },
+            equipment: {
+                width: width * 0.25,
+                height: height,
+            },
+        };
+
         const backgroundLayer = this.initializeBackgroundLayer();
         const workLayer = this.initializeWorkLayer();
         const equipmentLayer = this.initializeEquipmentLayer();
@@ -88,23 +91,10 @@ class App {
 
         this.root.add(backgroundLayer, workLayer, equipmentLayer);
 
-        const connectable1 = new TestComponent(['top-middle', 'bottom-middle'], {
-            measure: [1, 1],
-        });
+        const cat = renderEquipment('cat');
+        cat.draggable(true);
 
-        const connectable2 = new TestComponent(['top-middle', 'bottom-middle'], {
-            width: 200,
-            height: 200,
-        });
-
-        connectable1.attach(workLayer, [4, 0]);
-        connectable2.attach(workLayer, {x: 400, y: 300});
-
-        const test = this.root.find('.connectable') as ConnectableComponent[];
-
-        button.registerCallback('click', () => {
-            test.forEach((node) => (node as ConnectableComponent).toggle());
-        });
+        cat.attach(workLayer);
     }
 }
 
