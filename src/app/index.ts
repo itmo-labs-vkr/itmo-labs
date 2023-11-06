@@ -1,8 +1,7 @@
 import Konva from 'konva';
-import {Button, Frame} from '@labs/components';
+import {Button, RemoteComponent} from '@labs/components';
 import {BaseLayer} from '@labs/layers';
 import {state} from '@labs/state';
-import {renderEquipment} from 'ui';
 
 type Config = {
     width: number;
@@ -20,30 +19,10 @@ class App {
         this.config = config;
     }
 
-    initializeBackgroundLayer() {
-        const {
-            geometry: {width, height},
-        } = state.config();
-
-        const background = new Konva.Layer({width, height});
-        const frame = new Frame({
-            width,
-            height,
-            border: {width: 10, color: 'black'},
-            fill: '#f3f3f3',
-        });
-
-        frame.attach(background);
-
-        return background;
-    }
-
     initializeWorkLayer() {
         const {width, height} = this.sizes.workspace;
 
         const workLayer = new BaseLayer({width, height});
-
-        workLayer.outlite({width: 2, color: 'black'});
 
         return workLayer;
     }
@@ -51,10 +30,7 @@ class App {
     initializeEquipmentLayer() {
         const {width, height} = this.sizes.equipment;
 
-        const equipmentLayer = new Konva.Layer({width, height});
-        const frame = new Frame({width, height, border: {width: 2, color: 'black'}});
-
-        frame.attach(equipmentLayer);
+        const equipmentLayer = new BaseLayer({width, height});
 
         return equipmentLayer;
     }
@@ -68,7 +44,7 @@ class App {
 
         this.sizes = {
             workspace: {
-                width: width * 0.75,
+                width: width * 0.7,
                 height: height,
             },
             equipment: {
@@ -77,24 +53,20 @@ class App {
             },
         };
 
-        const backgroundLayer = this.initializeBackgroundLayer();
         const workLayer = this.initializeWorkLayer();
         const equipmentLayer = this.initializeEquipmentLayer();
 
-        equipmentLayer.add();
-
-        const button = new Button({text: 'добавить кнопку', measure: [2, 1], draggable: true});
+        const button = new Button({text: 'добавить кнопку', measure: [8, 3], draggable: true});
 
         button.attach(workLayer, {x: 100, y: 200});
 
-        equipmentLayer.x(this.sizes.workspace.width);
+        equipmentLayer.x(this.config.width - this.sizes.equipment.width);
 
-        this.root.add(backgroundLayer, workLayer, equipmentLayer);
+        this.root.add(workLayer, equipmentLayer);
 
-        const cat = renderEquipment('cat');
-        cat.draggable(true);
+        const wip = new RemoteComponent({name: 'wip'});
 
-        cat.attach(workLayer);
+        wip.attach(workLayer, [20, 25]);
     }
 }
 

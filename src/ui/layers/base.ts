@@ -1,6 +1,7 @@
 import Konva from 'konva';
 
 import {state} from '@labs/state';
+import {BaseComponent} from '../components';
 
 type OutlineConfig = {
     width: number;
@@ -46,6 +47,22 @@ class BaseLayer extends Konva.Layer {
         return this;
     }
 
+    add(...children: (Konva.Group | Konva.Shape | BaseComponent)[]) {
+        children.forEach((child) => {
+            if (child instanceof BaseComponent) {
+                const element = child.mount();
+
+                super.add(element);
+
+                return;
+            }
+
+            super.add(child);
+        });
+
+        return this;
+    }
+
     private _renderCells() {
         const {width: layerWidth, height: layerHeight} = this._props;
         const {cell} = state.config();
@@ -60,7 +77,7 @@ class BaseLayer extends Konva.Layer {
                 const rect = new Konva.Rect({
                     width,
                     height,
-                    stroke: 'black',
+                    stroke: 'rgba(0, 0, 0, 0.1)',
                 });
 
                 rect.x(i * width);

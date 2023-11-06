@@ -1,6 +1,6 @@
 import Konva from 'konva';
 import {state} from '@labs/state';
-import {assert} from '@labs/utils';
+import {assert, isDev} from '@labs/utils';
 
 interface IBaseComponent<AddtitionalProperties extends {} = {}> {
     _props: AddtitionalProperties & RequiredProps;
@@ -183,6 +183,13 @@ class BaseComponent<T extends {} = RequiredProps> extends Konva.Group implements
         }
 
         this._element = this.build();
+
+        if (isDev()) {
+            this._element.draggable(true);
+            this.registerCallback('click', () => {
+                console.log(`Clicked on`, this);
+            });
+        }
 
         return this._element;
     }

@@ -2,7 +2,7 @@ import {App} from '@labs/app';
 
 const app = new App({
     container: 'root',
-    width: window.innerWidth * 0.9,
+    width: window.innerWidth * 0.7,
     height: window.innerHeight * 0.8,
 });
 

@@ -1,12 +1,12 @@
-import {EquipmentEntity} from './types';
+import {isDev} from '@labs/utils';
+import {EquipmentEntity} from '@labs/server';
 
-// @ts-ignore
-const baseServerUrl = import.meta.env.DEV ? 'http://127.0.0.1:3000' : undefined;
+const baseServerUrl = isDev() ? 'http://127.0.0.1:3000' : undefined;
 
 const setup = async (): Promise<EquipmentEntity[]> => {
-    const equipment = await fetch(`${baseServerUrl}/equipment`);
+    const result = await fetch(`${baseServerUrl}/equipment`);
 
-    return equipment.json();
+    return result.json();
 };
 
 export {setup};

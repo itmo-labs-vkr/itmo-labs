@@ -15,4 +15,4 @@ export type EquipmentEntity = {
     };
 };
 
-export type Configuration = Record<string, EquipmentEntity>;
+export type Equipments = Record<string, EquipmentEntity>;

@@ -16,7 +16,8 @@
       "@labs/components": ["./ui/components/index.ts"],
       "@labs/layers": ["./ui/layers/index.ts"],
       "@labs/utils": ["./utils/index.ts"],
-      "@labs/state": ["./state/index.ts"]
+      "@labs/state": ["./state/index.ts"],
+      "@labs/server": ["./server/index.ts"]
     }
   },
   "include": ["src"]

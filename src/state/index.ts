@@ -1,32 +1,36 @@
 import {setup as setupEquipment} from './configuration';
-import {Configuration} from './types';
+import {EquipmentEntity, Equipments} from '@labs/server';
 
 type Geometry = {
     width: number;
     height: number;
 };
 
-const config = {
+const _config = {
     cell: {
-        width: 100,
-        height: 100,
+        width: 20,
+        height: 20,
     },
     geometry: {} as Geometry,
-    equipment: {} as Configuration,
+    equipment: {} as Equipments,
 };
 
+function config() {
+    return _config;
+}
+
 async function setup(geometry: Geometry) {
-    Object.assign(config.geometry, geometry);
+    Object.assign(_config.geometry, geometry);
 
     const equipment = await setupEquipment();
 
     for (const entity of equipment) {
-        config.equipment[entity.name] = entity;
+        _config.equipment[entity.name] = entity;
     }
 }
 
 function size(xCells: number, yCells: number): Geometry {
-    const {width, height} = config.cell;
+    const {width, height} = _config.cell;
 
     return {
         width: width * xCells,
@@ -34,12 +38,15 @@ function size(xCells: number, yCells: number): Geometry {
     };
 }
 
+function remote(name: string): EquipmentEntity {
+    return _config.equipment[name];
+}
+
 const state = {
     setup,
     size,
-    config() {
-        return config;
-    },
+    remote,
+    config,
 };
 
 export {state};
