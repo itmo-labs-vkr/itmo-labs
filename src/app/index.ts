@@ -2,6 +2,7 @@ import Konva from 'konva';
 import {Button, RemoteComponent} from '@labs/components';
 import {BaseLayer} from '@labs/layers';
 import {state} from '@labs/state';
+import {resize} from '@labs/utils';
 
 type Config = {
     width: number;
@@ -29,7 +30,6 @@ class App {
 
     initializeEquipmentLayer() {
         const {width, height} = this.sizes.equipment;
-
         const equipmentLayer = new BaseLayer({width, height});
 
         return equipmentLayer;
@@ -42,23 +42,25 @@ class App {
             geometry: {width, height},
         } = state.config();
 
+        const {cell} = state.config();
+
         this.sizes = {
             workspace: {
-                width: width * 0.7,
-                height: height,
+                width: resize(width * 0.7, cell.width),
+                height: resize(height, cell.height),
             },
             equipment: {
-                width: width * 0.25,
-                height: height,
+                width: resize(width * 0.25, cell.width),
+                height: resize(height, cell.height),
             },
         };
 
         const workLayer = this.initializeWorkLayer();
         const equipmentLayer = this.initializeEquipmentLayer();
 
-        const button = new Button({text: 'добавить кнопку', measure: [8, 3], draggable: true});
+        const button = new Button({text: 'добавить кнопку', measure: [8, 3]});
 
-        button.attach(workLayer, {x: 100, y: 200});
+        button.attach(workLayer, [2, 20]);
 
         equipmentLayer.x(this.config.width - this.sizes.equipment.width);
 
@@ -66,7 +68,8 @@ class App {
 
         const wip = new RemoteComponent({name: 'wip'});
 
-        wip.attach(workLayer, [20, 25]);
+        wip.attach(workLayer, [2, 2]);
+        wip.renderPorts();
     }
 }
 

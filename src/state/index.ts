@@ -1,18 +1,22 @@
-import {setup as setupEquipment} from './configuration';
-import {EquipmentEntity, Equipments} from '@labs/server';
+import {setup as fetchConfiguration} from './configuration';
+import {Config, EquipmentEntity} from '@labs/server';
 
 type Geometry = {
     width: number;
     height: number;
 };
 
-const _config = {
+type AppConfig = Config & {
+    geometry: Geometry;
+};
+
+const _config: AppConfig = {
     cell: {
         width: 20,
         height: 20,
     },
+    equipment: {},
     geometry: {} as Geometry,
-    equipment: {} as Equipments,
 };
 
 function config() {
@@ -22,11 +26,9 @@ function config() {
 async function setup(geometry: Geometry) {
     Object.assign(_config.geometry, geometry);
 
-    const equipment = await setupEquipment();
+    const fetched = await fetchConfiguration();
 
-    for (const entity of equipment) {
-        _config.equipment[entity.name] = entity;
-    }
+    Object.assign(_config, fetched);
 }
 
 function size(xCells: number, yCells: number): Geometry {
@@ -42,11 +44,21 @@ function remote(name: string): EquipmentEntity {
     return _config.equipment[name];
 }
 
+function position(point: Point2D): Point2D {
+    const {x, y} = point;
+
+    return {
+        x: x / _config.cell.width,
+        y: y / _config.cell.height,
+    };
+}
+
 const state = {
     setup,
     size,
     remote,
     config,
+    position,
 };
 
 export {state};

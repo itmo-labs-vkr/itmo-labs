@@ -11,6 +11,7 @@ type OutlineConfig = {
 class BaseLayer extends Konva.Layer {
     private _frame: Konva.Rect;
     private _props: RequireGeometry<Konva.LabelConfig>;
+    private _cells: Konva.Rect[][] = [];
 
     constructor(props: RequireGeometry<Konva.LabelConfig>) {
         super(props);
@@ -18,6 +19,9 @@ class BaseLayer extends Konva.Layer {
         this._props = props;
 
         const {width, height} = props;
+
+        this.width(width);
+        this.height(height);
 
         this._frame = new Konva.Rect({
             width,
@@ -63,6 +67,10 @@ class BaseLayer extends Konva.Layer {
         return this;
     }
 
+    cell({x, y}: Point2D) {
+        return this._cells[x][y];
+    }
+
     private _renderCells() {
         const {width: layerWidth, height: layerHeight} = this._props;
         const {cell} = state.config();
@@ -73,6 +81,8 @@ class BaseLayer extends Konva.Layer {
         const {width, height} = cell;
 
         for (let i = 0; i < x; i++) {
+            const row: Konva.Rect[] = [];
+
             for (let j = 0; j < y; j++) {
                 const rect = new Konva.Rect({
                     width,
@@ -83,8 +93,11 @@ class BaseLayer extends Konva.Layer {
                 rect.x(i * width);
                 rect.y(j * height);
 
+                row.push(rect);
                 this.add(rect);
             }
+
+            this._cells.push(row);
         }
     }
 }

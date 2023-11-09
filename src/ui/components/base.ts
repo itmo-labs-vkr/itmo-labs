@@ -1,6 +1,9 @@
 import Konva from 'konva';
+
 import {state} from '@labs/state';
-import {assert, isDev} from '@labs/utils';
+import {isDev} from '@labs/utils';
+
+import type {BaseLayer} from '@labs/layers';
 
 interface IBaseComponent<AddtitionalProperties extends {} = {}> {
     _props: AddtitionalProperties & RequiredProps;
@@ -94,7 +97,6 @@ class BaseComponent<T extends {} = RequiredProps> extends Konva.Group implements
     _handlers: EventHandlers<unknown> = {};
     _props: T & RequiredProps;
 
-    protected _position: Point2D | undefined;
     protected _element: Konva.Group | undefined;
 
     constructor(props: ComponentProps<T>) {
@@ -109,18 +111,12 @@ class BaseComponent<T extends {} = RequiredProps> extends Konva.Group implements
 
         this.width(width);
         this.height(height);
+    }
 
-        this.registerCallback('dragstart', () => {
-            assert(typeof this._position === 'undefined');
-
-            this._position = this.getAbsolutePosition();
-        });
-
+    movable() {
+        this.draggable(true);
         this.registerCallback('dragend', () => {
-            assert(typeof this._position !== 'undefined');
-
             const {
-                // eslint-disable-next-line @typescript-eslint/no-shadow
                 cell: {width, height},
             } = state.config();
 
@@ -128,8 +124,6 @@ class BaseComponent<T extends {} = RequiredProps> extends Konva.Group implements
 
             this.x(x - (x % width));
             this.y(y - (y % height));
-
-            this._position = undefined;
         });
     }
 
@@ -184,8 +178,9 @@ class BaseComponent<T extends {} = RequiredProps> extends Konva.Group implements
 
         this._element = this.build();
 
+        this.configure();
+
         if (isDev()) {
-            this._element.draggable(true);
             this.registerCallback('click', () => {
                 console.log(`Clicked on`, this);
             });
@@ -207,6 +202,22 @@ class BaseComponent<T extends {} = RequiredProps> extends Konva.Group implements
 
         this.destroy();
     }
+
+    layer(): BaseLayer {
+        const layer = this.getLayer();
+
+        if (!layer) {
+            throw new Error('Unbale to get layer');
+        }
+
+        return layer as BaseLayer;
+    }
+
+    /**
+     * Used to configure component's event
+     * @returns nothing
+     */
+    protected configure() {}
 }
 
 export {BaseComponent};

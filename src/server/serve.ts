@@ -1,14 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 
-import equipment from './equipment';
+import config from './config';
 
 const app = express();
 
 app.use(cors());
 
-app.get('/equipment', async (_, res) => {
-    const result = await equipment();
+app.get('/config', async (_, res) => {
+    const result = await config();
 
     res.status(200).json(result);
 });

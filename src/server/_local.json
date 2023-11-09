@@ -1,9 +1,28 @@
-[
-  {
-    "measure": [10, 10],
-    "name": "wip",
-    "src": {
-      "base": "https://itmo-labs-assets.storage.yandexcloud.net/assets/wip.jpg"
+{
+  "cell": {
+    "width": 20,
+    "height": 20
+  },
+  "equipment": {
+    "wip": {
+      "measure": [8, 8],
+      "ports": [
+        {
+          "position": [1, 0]
+        },
+        {
+          "position": [0, 0]
+        },
+        {
+          "position": [0, 1]
+        },
+        {
+          "position": [9, 9]
+        }
+      ],
+      "src": {
+        "base": "https://itmo-labs-assets.storage.yandexcloud.net/assets/wip.jpg"
+      }
     }
   }
-]
+}
