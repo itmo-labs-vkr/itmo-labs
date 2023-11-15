@@ -1,5 +1,6 @@
 import Konva from 'konva';
-import {Button, RemoteComponent} from '@labs/components';
+
+import {RemoteComponent} from '@labs/components';
 import {BaseLayer} from '@labs/layers';
 import {state} from '@labs/state';
 import {resize} from '@labs/utils';
@@ -23,7 +24,7 @@ class App {
     initializeWorkLayer() {
         const {width, height} = this.sizes.workspace;
 
-        const workLayer = new BaseLayer({width, height});
+        const workLayer = new BaseLayer({width, height, withWires: true});
 
         return workLayer;
     }
@@ -58,18 +59,19 @@ class App {
         const workLayer = this.initializeWorkLayer();
         const equipmentLayer = this.initializeEquipmentLayer();
 
-        const button = new Button({text: 'добавить кнопку', measure: [8, 3]});
-
-        button.attach(workLayer, [2, 20]);
-
         equipmentLayer.x(this.config.width - this.sizes.equipment.width);
 
         this.root.add(workLayer, equipmentLayer);
 
-        const wip = new RemoteComponent({name: 'wip'});
+        const lamp = new RemoteComponent({name: 'lamp'});
 
-        wip.attach(workLayer, [2, 2]);
-        wip.renderPorts();
+        lamp.attach(workLayer, [10, 4]);
+        lamp.renderPorts();
+
+        const battery = new RemoteComponent({name: 'battery'});
+
+        battery.attach(workLayer, [10, 10]);
+        battery.renderPorts();
     }
 }
 

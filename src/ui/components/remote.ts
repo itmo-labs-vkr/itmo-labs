@@ -1,9 +1,8 @@
-import Konva from 'konva';
-
 import {state} from '@labs/state';
 import {EquipmentEntity} from '@labs/server';
 import {BaseComponent} from './base';
 import {Picture} from './picture';
+import {Cell} from './cell';
 
 type RemoteProps = {
     name: string;
@@ -11,10 +10,16 @@ type RemoteProps = {
 
 /** Used to render component from server */
 class RemoteComponent extends BaseComponent<EquipmentEntity> {
-    private _renderedPorts: Konva.Rect[] = [];
+    isEnvironment = false;
+
+    private _renderedPorts: Cell[] = [];
 
     constructor({name}: RemoteProps) {
         const props = state.remote(name);
+
+        if (!props) {
+            throw new Error(`Unable to create: ${name} component is not defined`);
+        }
 
         super(props);
     }
@@ -62,10 +67,16 @@ class RemoteComponent extends BaseComponent<EquipmentEntity> {
                 y: start.y + y - 1,
             };
 
-            const cell = this.layer().cell(point);
+            try {
+                const cell = this.layer().cell(point);
 
-            this._renderedPorts.push(cell);
-            cell.fill('red');
+                if (cell) {
+                    // coz some ports can overflow screen
+
+                    this._renderedPorts.push(cell);
+                    cell.fill('red');
+                }
+            } catch {}
         }
     }
 }

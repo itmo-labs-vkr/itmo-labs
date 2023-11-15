@@ -31,4 +31,9 @@ declare global {
           };
 
     export type ComponentProps<T = {}> = T & RequiredProps & Partial<Konva.ShapeConfig>;
+
+    export type LayerEvent<Event> = Event & {
+        layerX: number;
+        layerY: number;
+    };
 }

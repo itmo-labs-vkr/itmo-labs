@@ -1,12 +1,15 @@
 import Konva from 'konva';
 
 import {state} from '@labs/state';
-import {isDev} from '@labs/utils';
 
 import type {BaseLayer} from '@labs/layers';
 
-interface IBaseComponent<AddtitionalProperties extends {} = {}> {
+interface IBaseComponent<
+    AddtitionalProperties extends {} = {},
+    State extends {} | undefined = undefined,
+> {
     _props: AddtitionalProperties & RequiredProps;
+    _state: State;
     defaultProps?: AddtitionalProperties;
     registerCallback<Event extends EventName>(
         name: Event,
@@ -81,33 +84,50 @@ function applyDefaultProps<T extends Config>(props: T, defaultProps: Record<stri
     return result as T;
 }
 
-class BaseComponent<T extends {} = RequiredProps> extends Konva.Group implements IBaseComponent<T> {
+class BaseComponent<Props extends {} = RequiredProps, State extends {} | undefined = undefined>
+    extends Konva.Group
+    implements IBaseComponent<Props, State>
+{
     static defaultProps: Record<string, unknown>;
 
     protected static _extractSizeFromProps(props: RequiredProps) {
         if ('measure' in props) {
             const [widthInCells, heigthInCells] = props.measure;
 
-            return state.size(widthInCells, heigthInCells);
+            return {...state.size(widthInCells, heigthInCells), measure: props.measure};
         }
 
-        return props;
+        return {...props, measure: undefined};
     }
 
     _handlers: EventHandlers<unknown> = {};
-    _props: T & RequiredProps;
+    _props: Props & RequiredProps;
+    _state: State;
+
+    /**
+     * marks conmponent as part of lab (like Cell, Button)
+     */
+    isEnvironment = true;
+
+    /**
+     * [width, height]
+     */
+    measure: [number, number] | undefined;
 
     protected _element: Konva.Group | undefined;
 
-    constructor(props: ComponentProps<T>) {
+    constructor(props: ComponentProps<Props>) {
         super(props);
 
         // ngl this is bad
         // @ts-ignore
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this._props = applyDefaultProps(props, this.constructor.defaultProps);
+        this._state = this.state();
 
-        const {width, height} = BaseComponent._extractSizeFromProps(this._props);
+        const {width, height, measure} = BaseComponent._extractSizeFromProps(this._props);
+
+        this.measure = measure;
 
         this.width(width);
         this.height(height);
@@ -180,12 +200,6 @@ class BaseComponent<T extends {} = RequiredProps> extends Konva.Group implements
 
         this.configure();
 
-        if (isDev()) {
-            this.registerCallback('click', () => {
-                console.log(`Clicked on`, this);
-            });
-        }
-
         return this._element;
     }
 
@@ -218,6 +232,14 @@ class BaseComponent<T extends {} = RequiredProps> extends Konva.Group implements
      * @returns nothing
      */
     protected configure() {}
+
+    /**
+     * used to initialize component's state
+     * @returns initial state
+     */
+    protected state(): State {
+        return undefined as State;
+    }
 }
 
 export {BaseComponent};

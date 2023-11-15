@@ -9,7 +9,6 @@ class Picture extends BaseComponent<PictureProps> {
         const image = new Image(this.width(), this.height());
 
         image.src = this._props.src;
-
         this.add(new Konva.Image({image, width: this.width(), height: this.height()}));
 
         return this;

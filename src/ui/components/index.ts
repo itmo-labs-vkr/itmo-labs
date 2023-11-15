@@ -5,3 +5,4 @@ export {Frame} from './frame';
 export {ConnectableComponent} from './connectable';
 export {Picture} from './picture';
 export {RemoteComponent} from './remote';
+export {Cell} from './cell';

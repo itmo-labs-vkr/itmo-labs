@@ -48,8 +48,8 @@ function position(point: Point2D): Point2D {
     const {x, y} = point;
 
     return {
-        x: x / _config.cell.width,
-        y: y / _config.cell.height,
+        x: Math.floor(x / _config.cell.width),
+        y: Math.floor(y / _config.cell.height),
     };
 }
 
