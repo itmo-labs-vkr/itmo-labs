@@ -1,6 +1,6 @@
 import Konva from 'konva';
 
-import {RemoteComponent} from '@labs/components';
+import {Button, RemoteComponent} from '@labs/components';
 import {BaseLayer} from '@labs/layers';
 import {state} from '@labs/state';
 import {resize} from '@labs/utils';
@@ -72,6 +72,10 @@ class App {
 
         battery.attach(workLayer, [10, 10]);
         battery.renderPorts();
+
+        const runButton = new Button({text: 'Запустить работу', measure: [4, 2]});
+
+        runButton.attach(equipmentLayer, [0, 0]);
     }
 }
 

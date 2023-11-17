@@ -9,7 +9,6 @@ type EquipmentPort = {
 };
 
 export type EquipmentEntity = {
-    name: string;
     measure: [number, number];
     ports?: EquipmentPort[];
     src: {
@@ -19,10 +18,18 @@ export type EquipmentEntity = {
 };
 
 export type Equipments = Record<string, EquipmentEntity>;
+
+/** [from, to, count of connections] */
+export type Connection = [string, string, number | undefined];
+
 export type Config = {
     cell: {
         width: number;
         height: number;
     };
     equipment: Equipments;
+    proofOfDone: {
+        required: string[];
+        connections: Connection[];
+    };
 };

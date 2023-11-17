@@ -34,6 +34,7 @@ class RemoteComponent extends BaseComponent<EquipmentEntity> {
         this.registerCallback('dragstart', () => {
             this._renderedPorts.forEach((port) => {
                 port.fill('white');
+                port.borrow();
             });
 
             this._renderedPorts.length = 0;
@@ -75,6 +76,7 @@ class RemoteComponent extends BaseComponent<EquipmentEntity> {
 
                     this._renderedPorts.push(cell);
                     cell.fill('red');
+                    cell.borrow(this);
                 }
             } catch {}
         }

@@ -32,5 +32,9 @@
         "base": "https://w7.pngwing.com/pngs/633/475/png-transparent-electronic-symbol-wiring-diagram-battery-electricity-property-element-miscellaneous-angle-rectangle.png"
       }
     }
+  },
+  "proofOfDone": {
+    "required": ["lamp", "battery"],
+    "connections": [["lamp", "battery", 2]]
   }
 }

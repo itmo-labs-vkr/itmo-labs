@@ -120,6 +120,10 @@ class BaseLayer extends Konva.Layer {
 
     private _enableWires() {
         this.addEventListener('mousedown', (event) => {
+            if (!this._allowWires) {
+                return;
+            }
+
             const cell = this._getCellFromEvent(event as any);
 
             if (!cell) {
@@ -136,10 +140,43 @@ class BaseLayer extends Konva.Layer {
 
             const cell = this._getCellFromEvent(event as any);
 
-            cell?.fill('orange');
+            if (!cell) {
+                return;
+            }
+
+            if (this._wire.at(-1) !== cell) {
+                this._wire.push(cell);
+            }
+
+            cell.fill('orange');
         });
 
         this.addEventListener('mouseup', () => {
+            if (!this._wire.length) {
+                return;
+            }
+
+            let isWireLinked = true;
+
+            for (let i = 0; i < this._wire.length - 1; i++) {
+                if (this._wire[i].distanceTo(this._wire[i + 1]) !== 1) {
+                    isWireLinked = false;
+
+                    break;
+                }
+            }
+
+            const fromComponent = this._wire[0].owner();
+            const targetComponent = this._wire.at(-1)!.owner();
+
+            const isLinkBetweenComponents = ![fromComponent, targetComponent].includes(undefined);
+
+            if (!isWireLinked || !isLinkBetweenComponents) {
+                this._wire.forEach((cell) => {
+                    cell.fill('white');
+                });
+            }
+
             this._wire.length = 0;
             this._areWiresInProgress = false;
         });

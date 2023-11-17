@@ -5,7 +5,7 @@ import {state} from '@labs/state';
 
 type CellState = {
     empty: boolean;
-    component?: string;
+    component?: BaseComponent;
 };
 
 class Cell extends BaseComponent<{}, CellState> {
@@ -37,6 +37,34 @@ class Cell extends BaseComponent<{}, CellState> {
 
     fill(color: string) {
         this._rect.fill(color);
+    }
+
+    borrow(component?: BaseComponent) {
+        this._state = {
+            empty: typeof component === 'undefined',
+            component,
+        };
+    }
+
+    owner() {
+        return this._state.component;
+    }
+
+    /**
+     *
+     * @param other cell
+     * @returns manhattan distance in cells
+     */
+    distanceTo(other: Cell): number {
+        const [x, y] = [this.x(), this.y()];
+        const [otherX, otherY] = [other.x(), other.y()];
+
+        const {x: diffX, y: diffY} = state.position({
+            x: Math.abs(x - otherX),
+            y: Math.abs(y - otherY),
+        });
+
+        return diffX + diffY;
     }
 
     isInComoponent(component: BaseComponent) {

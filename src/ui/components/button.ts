@@ -11,6 +11,8 @@ type ButtonConfig = {
 };
 
 class Button extends BaseComponent<ButtonConfig> {
+    isEnvironment = false;
+
     build(): Button {
         const {fill, color, text} = this._props;
 
