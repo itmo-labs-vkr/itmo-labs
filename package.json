@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "dev:client": "MODE=dev vite",
-    "dev:server": "PORT=3000 ts-node ./src/server/serve.ts"
+    "dev:server": "PORT=3000 ts-node ./src/server/serve.ts",
+    "test": "vitest"
   },
   "license": "ISC",
   "devDependencies": {
@@ -24,12 +25,14 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2",
     "vite": "^4.4.11",
-    "vite-tsconfig-paths": "^4.2.1"
+    "vite-tsconfig-paths": "^4.2.1",
+    "vitest": "^1.4.0"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "konva": "^9.2.2"
+    "konva": "^9.2.2",
+    "mathjs": "^12.4.1"
   }
 }

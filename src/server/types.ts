@@ -8,6 +8,14 @@ type EquipmentPort = {
     access?: string;
 };
 
+export type PhysicsNotation = {
+    initial?: Record<string, number>;
+    /** in system SI */
+    constants: Record<string, number>;
+    dependsOn: string[];
+    produces: Record<string, string>;
+};
+
 export type EquipmentEntity = {
     measure: [number, number];
     ports?: EquipmentPort[];
@@ -15,6 +23,7 @@ export type EquipmentEntity = {
         base: string;
         active?: string;
     };
+    physics: PhysicsNotation;
 };
 
 export type Equipments = Record<string, EquipmentEntity>;
