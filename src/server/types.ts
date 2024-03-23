@@ -10,9 +10,10 @@ type EquipmentPort = {
 
 export type PhysicsNotation = {
     initial?: Record<string, number>;
+    /** optional, component may be generator (like battery) */
+    dependsOn?: string[];
     /** in system SI */
     constants: Record<string, number>;
-    dependsOn: string[];
     produces: Record<string, string>;
 };
 
@@ -41,4 +42,5 @@ export type Config = {
         required: string[];
         connections: Connection[];
     };
+    entry: string;
 };

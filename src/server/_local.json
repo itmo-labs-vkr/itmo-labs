@@ -16,6 +16,12 @@
       ],
       "src": {
         "base": "https://res.cloudinary.com/dk-find-out/image/upload/q_80,w_960,f_auto/Electrical-symbol-bulb_znawrt.jpg"
+      },
+      "physics": {
+        "dependsOf": ["U", "R"],
+        "produces": {
+          "I": "U / R"
+        }
       }
     },
     "battery": {
@@ -30,11 +36,22 @@
       ],
       "src": {
         "base": "https://w7.pngwing.com/pngs/633/475/png-transparent-electronic-symbol-wiring-diagram-battery-electricity-property-element-miscellaneous-angle-rectangle.png"
+      },
+      "physics": {
+        "initial": {
+          "U": 220,
+          "R": 4
+        },
+        "produces": {
+          "U": "[slider:0,100]U",
+          "R": "R"
+        }
       }
     }
   },
   "proofOfDone": {
     "required": ["lamp", "battery"],
     "connections": [["lamp", "battery", 2]]
-  }
+  },
+  "entry": "battery"
 }

@@ -108,6 +108,7 @@ class BaseComponent<Props extends {} = RequiredProps, State extends {} | undefin
      * marks conmponent as part of lab (like Cell, Button)
      */
     isEnvironment = true;
+    type: string | undefined;
 
     /**
      * [width, height]
@@ -128,6 +129,8 @@ class BaseComponent<Props extends {} = RequiredProps, State extends {} | undefin
         const {width, height, measure} = BaseComponent._extractSizeFromProps(this._props);
 
         this.measure = measure;
+        this.type = props.type;
+        this.id(Math.floor(Math.random() * 1e9).toString(16));
 
         this.width(width);
         this.height(height);

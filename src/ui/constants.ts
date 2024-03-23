@@ -30,7 +30,14 @@ declare global {
               measure: [number, number];
           };
 
-    export type ComponentProps<T = {}> = T & RequiredProps & Partial<Konva.ShapeConfig>;
+    type OptionalProps = Partial<{
+        type: string;
+    }>;
+
+    export type ComponentProps<T = {}> = T &
+        RequiredProps &
+        OptionalProps &
+        Partial<Konva.ShapeConfig>;
 
     export type LayerEvent<Event> = Event & {
         layerX: number;

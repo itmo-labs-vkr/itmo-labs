@@ -1,7 +1,7 @@
 import Konva from 'konva';
 
 import {state} from '@labs/state';
-import {BaseComponent, Button, Cell} from '../components';
+import {BaseComponent, Button, Cell, RemoteComponent} from '../components';
 
 type OutlineConfig = {
     width: number;
@@ -13,6 +13,8 @@ type Props = {
 };
 
 class BaseLayer extends Konva.Layer {
+    equipments: Record<string, RemoteComponent> = {};
+
     private _frame: Konva.Rect;
     private _props: RequireGeometry<Konva.LabelConfig>;
 
@@ -20,8 +22,6 @@ class BaseLayer extends Konva.Layer {
     private _areWiresInProgress = false;
     private _cells: Cell[][] = [];
     private _wire: Cell[] = [];
-
-    private equipments: BaseComponent[] = [];
 
     constructor(props: RequireGeometry<Konva.LabelConfig & Props>) {
         super(props);
@@ -71,8 +71,8 @@ class BaseLayer extends Konva.Layer {
     add(...children: (Konva.Group | Konva.Shape | BaseComponent)[]) {
         children.forEach((child) => {
             if (child instanceof BaseComponent) {
-                if (!child.isEnvironment) {
-                    this.equipments.push(child);
+                if (child instanceof RemoteComponent && !child.isEnvironment) {
+                    this.equipments[child.id()] = child;
                 }
 
                 const element = child.mount();
@@ -175,7 +175,14 @@ class BaseLayer extends Konva.Layer {
                 this._wire.forEach((cell) => {
                     cell.fill('white');
                 });
+
+                this._wire.length = 0;
+                this._areWiresInProgress = false;
+
+                return;
             }
+
+            state.connect(fromComponent!, targetComponent!);
 
             this._wire.length = 0;
             this._areWiresInProgress = false;
@@ -204,7 +211,7 @@ class BaseLayer extends Konva.Layer {
 
             const cell = this.cell({x: cellX, y: cellY});
 
-            if (this.equipments.find(cell.isInComoponent.bind(cell))) {
+            if (Object.values(this.equipments).find(cell.isInComoponent.bind(cell))) {
                 return undefined;
             }
 

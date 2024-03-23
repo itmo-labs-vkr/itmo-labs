@@ -8,11 +8,13 @@ export const create = <T extends PhysicsNotation>(notation: T): ProcessedPhysics
         Object.assign(values, updateWith);
     };
 
+    /* @todo cache values */
     const compute = (): Partial<Outputs<T>> => {
         const targets = Object.entries(notation.produces);
         const scope = {
-            ...values,
             ...notation.constants,
+            ...notation.initial,
+            ...values,
         };
 
         const result: Record<string, number | undefined> = {};

@@ -1,3 +1,4 @@
+import {BaseComponent} from 'ui';
 import {setup as fetchConfiguration} from './fetch';
 import {Config, EquipmentEntity} from '@labs/server';
 
@@ -9,6 +10,7 @@ type Geometry = {
 type AppConfig = Config & {
     geometry: Geometry;
     connections: Map<string, number>;
+    relations: Record<string, string[]>;
 };
 
 const _config: AppConfig = {
@@ -19,7 +21,9 @@ const _config: AppConfig = {
     equipment: {},
     geometry: {} as AppConfig['geometry'],
     proofOfDone: {} as AppConfig['proofOfDone'],
+    relations: {},
     connections: new Map(),
+    entry: '',
 };
 
 function config() {
@@ -56,12 +60,32 @@ function position(point: Point2D): Point2D {
     };
 }
 
-function connect(from: string, to: string) {
-    const hash = [from, to].sort().join('#');
+function connect(from: BaseComponent, to: BaseComponent) {
+    const [fromType, toType] = [from.type!, to.type!];
+    const [fromId, toId] = [from.id(), to.id()];
 
+    const hash = [fromType, toType].sort().join('#');
     const count = _config.connections.get(hash) || 0;
+
+    if (_config.relations[fromId]) {
+        _config.relations[fromId].push(toId);
+    } else {
+        _config.relations[fromId] = [toId];
+    }
+
+    if (_config.relations[toId]) {
+        _config.relations[toId].push(fromId);
+    } else {
+        _config.relations[toId] = [fromId];
+    }
 
     _config.connections.set(hash, count + 1);
 }
 
-export {setup, size, remote, config, position, connect};
+function connections(from: string, to: string) {
+    const hash = [from, to].sort().join('#');
+
+    return _config.connections.get(hash) || 0;
+}
+
+export {setup, size, remote, config, position, connect, connections};

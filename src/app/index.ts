@@ -4,6 +4,7 @@ import {Button, RemoteComponent} from '@labs/components';
 import {BaseLayer} from '@labs/layers';
 import {state} from '@labs/state';
 import {resize} from '@labs/utils';
+import {run} from './run';
 
 type Config = {
     width: number;
@@ -74,6 +75,8 @@ class App {
         battery.renderPorts();
 
         const runButton = new Button({text: 'Запустить работу', measure: [4, 2]});
+
+        runButton.registerCallback('click', run.bind(workLayer));
 
         runButton.attach(equipmentLayer, [0, 0]);
     }

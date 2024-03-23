@@ -3,7 +3,7 @@
     "target": "ES6",
     "module": "NodeNext",
     "lib": ["DOM", "ESNext"],
-    "moduleResolution": "Node16",
+    "moduleResolution": "NodeNext",
     "outDir": "dist",
     "isolatedModules": true,
     "baseUrl": "src",

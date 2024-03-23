@@ -3,6 +3,7 @@ import {EquipmentEntity} from '@labs/server';
 import {BaseComponent} from './base';
 import {Picture} from './picture';
 import {Cell} from './cell';
+import {ProcessedPhysics, create} from 'physics';
 
 type RemoteProps = {
     name: string;
@@ -11,6 +12,7 @@ type RemoteProps = {
 /** Used to render component from server */
 class RemoteComponent extends BaseComponent<EquipmentEntity> {
     isEnvironment = false;
+    physics: ProcessedPhysics;
 
     private _renderedPorts: Cell[] = [];
 
@@ -22,6 +24,9 @@ class RemoteComponent extends BaseComponent<EquipmentEntity> {
         }
 
         super(props);
+
+        this.type = name;
+        this.physics = create(props.physics);
     }
 
     configure() {
