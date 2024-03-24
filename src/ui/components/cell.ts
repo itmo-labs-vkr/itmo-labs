@@ -2,10 +2,11 @@ import Konva from 'konva';
 
 import {BaseComponent} from './base';
 import {state} from '@labs/state';
+import {RemoteComponent} from './remote';
 
 type CellState = {
     empty: boolean;
-    component?: BaseComponent;
+    component?: RemoteComponent;
 };
 
 class Cell extends BaseComponent<{}, CellState> {
@@ -39,11 +40,13 @@ class Cell extends BaseComponent<{}, CellState> {
         this._rect.fill(color);
     }
 
-    borrow(component?: BaseComponent) {
+    borrow(component?: RemoteComponent) {
         this._state = {
             empty: typeof component === 'undefined',
             component,
         };
+
+        this.fill(component ? 'red' : 'white');
     }
 
     owner() {

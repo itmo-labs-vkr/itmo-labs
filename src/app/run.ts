@@ -1,10 +1,18 @@
 import {BaseLayer} from '@labs/layers';
-import {animate, process, validate} from './steps';
+import {process, validate} from './steps';
+import {RuntimeError, render} from './errors';
 
 export function run(this: BaseLayer) {
-    if (!validate(this)) {
-        return;
-    }
+    try {
+        validate(this);
+        process(this);
+    } catch (error) {
+        if (error instanceof RuntimeError) {
+            render(error);
 
-    process(this);
+            return;
+        }
+
+        console.error(error);
+    }
 }

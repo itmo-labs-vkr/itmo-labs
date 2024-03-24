@@ -1,4 +1,4 @@
-import {BaseComponent} from 'ui';
+import {Cell, RemoteComponent} from '@labs/components';
 import {setup as fetchConfiguration} from './fetch';
 import {Config, EquipmentEntity} from '@labs/server';
 
@@ -9,8 +9,11 @@ type Geometry = {
 
 type AppConfig = Config & {
     geometry: Geometry;
-    connections: Map<string, number>;
-    relations: Record<string, string[]>;
+    empty: Geometry;
+    /** Record<type#type, Cell[][]> */
+    connections: Map<string, Cell[][]>;
+    /** Record<hash, Component> */
+    relations: Record<string, RemoteComponent[]>;
 };
 
 const _config: AppConfig = {
@@ -19,6 +22,7 @@ const _config: AppConfig = {
         height: 20,
     },
     equipment: {},
+    empty: {} as AppConfig['empty'],
     geometry: {} as AppConfig['geometry'],
     proofOfDone: {} as AppConfig['proofOfDone'],
     relations: {},
@@ -47,6 +51,10 @@ function size(xCells: number, yCells: number): Geometry {
     };
 }
 
+function set<Key extends keyof AppConfig>(key: Key, value: AppConfig[Key]) {
+    _config[key] = value;
+}
+
 function remote(name: string): EquipmentEntity {
     return _config.equipment[name];
 }
@@ -60,32 +68,57 @@ function position(point: Point2D): Point2D {
     };
 }
 
-function connect(from: BaseComponent, to: BaseComponent) {
+function connect(from: RemoteComponent, to: RemoteComponent, wire: Cell[]) {
     const [fromType, toType] = [from.type!, to.type!];
     const [fromId, toId] = [from.id(), to.id()];
 
     const hash = [fromType, toType].sort().join('#');
-    const count = _config.connections.get(hash) || 0;
+    const conntectedWires = _config.connections.get(hash) || [];
 
     if (_config.relations[fromId]) {
-        _config.relations[fromId].push(toId);
+        _config.relations[fromId].push(to);
     } else {
-        _config.relations[fromId] = [toId];
+        _config.relations[fromId] = [to];
     }
 
     if (_config.relations[toId]) {
-        _config.relations[toId].push(fromId);
+        _config.relations[toId].push(from);
     } else {
-        _config.relations[toId] = [fromId];
+        _config.relations[toId] = [from];
     }
 
-    _config.connections.set(hash, count + 1);
+    _config.connections.set(hash, [...conntectedWires, wire]);
 }
 
 function connections(from: string, to: string) {
     const hash = [from, to].sort().join('#');
 
-    return _config.connections.get(hash) || 0;
+    return (_config.connections.get(hash) || []).length;
 }
 
-export {setup, size, remote, config, position, connect, connections};
+function relations(from: string): RemoteComponent[] {
+    return _config.relations[from] || [];
+}
+
+function disconnect(from: RemoteComponent, to: RemoteComponent) {
+    const [fromType, toType] = [from.type!, to.type!];
+    const [fromId, toId] = [from.id(), to.id()];
+    const hash = [fromType, toType].sort().join('#');
+
+    _config.relations[fromId] = _config.relations[fromId].filter((el) => el.id() !== toId);
+    _config.relations[toId] = _config.relations[toId].filter((el) => el.id() !== fromId);
+
+    const wires = _config.connections.get(hash);
+
+    wires?.forEach((wire) => {
+        wire.forEach((cell) => {
+            cell.borrow(undefined);
+        });
+    });
+
+    to.renderPorts();
+
+    _config.connections.delete(hash);
+}
+
+export {setup, size, remote, config, position, connect, connections, set, relations, disconnect};

@@ -24,10 +24,15 @@ export const process = (layer: BaseLayer) => {
 
         component.physics.feed(prevResult);
 
-        console.log(component.id(), component.physics.compute());
+        document.body.append(
+            document.createTextNode(JSON.stringify(component.physics.compute(), null, 4)),
+            document.createElement('br'),
+        );
 
         queue.push(
-            ...config.relations[component.id()].map((id) => [current, id] as [string, string]),
+            ...config.relations[component.id()].map(
+                (value) => [layer.equipments[current].id(), value.id()] as [string, string],
+            ),
         );
     }
 };

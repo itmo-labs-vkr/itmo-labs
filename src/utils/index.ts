@@ -11,9 +11,15 @@ const assert = (statement: boolean, erorr = 'Assertion faled') => {
     }
 };
 
+const extract = <Key extends string>(key: Key) => {
+    return <T extends Record<Key, unknown>>(target: T) => {
+        return target[key];
+    };
+};
+
 const isDev = () => {
     // @ts-ignore
     return import.meta.env.DEV;
 };
 
-export {random, unique, assert, resize, isDev};
+export {random, unique, assert, resize, isDev, extract};

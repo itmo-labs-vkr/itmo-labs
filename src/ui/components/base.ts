@@ -103,6 +103,7 @@ class BaseComponent<Props extends {} = RequiredProps, State extends {} | undefin
     _handlers: EventHandlers<unknown> = {};
     _props: Props & RequiredProps;
     _state: State;
+    _initial: Point2D | undefined;
 
     /**
      * marks conmponent as part of lab (like Cell, Button)
@@ -136,18 +137,9 @@ class BaseComponent<Props extends {} = RequiredProps, State extends {} | undefin
         this.height(height);
     }
 
-    movable() {
-        this.draggable(true);
-        this.registerCallback('dragend', () => {
-            const {
-                cell: {width, height},
-            } = state.config();
-
-            const {x, y} = this.getAbsolutePosition();
-
-            this.x(x - (x % width));
-            this.y(y - (y % height));
-        });
+    resetPosition() {
+        console.log(this._initial);
+        this.x(this._initial?.x ?? 0).y(this._initial?.y ?? 0);
     }
 
     registerCallback<Event extends EventName>(
@@ -171,6 +163,12 @@ class BaseComponent<Props extends {} = RequiredProps, State extends {} | undefin
             ? state.size(...at)
             : {width: at.x, height: at.y};
 
+        if ((x || y) && !this._initial) {
+            this._initial = {
+                x,
+                y,
+            };
+        }
         const element = component instanceof BaseComponent ? component.mount() : component;
 
         element.x(x).y(y);
@@ -186,6 +184,13 @@ class BaseComponent<Props extends {} = RequiredProps, State extends {} | undefin
             : {width: at.x, height: at.y};
 
         const element = this.mount();
+
+        if ((x || y) && !this._initial) {
+            this._initial = {
+                x,
+                y,
+            };
+        }
 
         element.x(x).y(y);
 
