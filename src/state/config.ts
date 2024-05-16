@@ -1,6 +1,7 @@
 import {Cell, RemoteComponent} from '@labs/components';
 import {setup as fetchConfiguration} from './fetch';
 import {Config, EquipmentEntity} from '@labs/server';
+import Konva from 'konva';
 
 type Geometry = {
     width: number;
@@ -14,6 +15,8 @@ type AppConfig = Config & {
     connections: Map<string, Cell[][]>;
     /** Record<hash, Component> */
     relations: Record<string, RemoteComponent[]>;
+    root: Konva.Layer;
+    client: ReturnType<HTMLElement['getBoundingClientRect']>;
 };
 
 const _config: AppConfig = {
@@ -21,6 +24,7 @@ const _config: AppConfig = {
         width: 20,
         height: 20,
     },
+    root: {} as Konva.Layer,
     equipment: {},
     empty: {} as AppConfig['empty'],
     geometry: {} as AppConfig['geometry'],
@@ -28,18 +32,20 @@ const _config: AppConfig = {
     relations: {},
     connections: new Map(),
     entry: '',
+    client: {} as AppConfig['client'],
 };
 
 function config() {
     return _config;
 }
 
-async function setup(geometry: Geometry) {
+async function setup(geometry: Geometry, root: Konva.Layer) {
     Object.assign(_config.geometry, geometry);
 
     const fetched = await fetchConfiguration();
+    const client = document.getElementById('root')!.getBoundingClientRect();
 
-    Object.assign(_config, fetched);
+    Object.assign(_config, fetched, {root, client});
 }
 
 function size(xCells: number, yCells: number): Geometry {
@@ -68,7 +74,7 @@ function position(point: Point2D): Point2D {
     };
 }
 
-function connect(from: RemoteComponent, to: RemoteComponent, wire: Cell[]) {
+function connect(from: RemoteComponent, to: RemoteComponent, wire: Cell[] = []) {
     const [fromType, toType] = [from.type!, to.type!];
     const [fromId, toId] = [from.id(), to.id()];
 

@@ -1,0 +1,30 @@
+.popup-element {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background-color: rgba(10, 10, 10, .4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    padding: 20px 10px;
+    background-color: white;
+    max-width: 300px;
+    position: relative;
+    min-width: 200px;
+}
+
+.popup-content > .title {
+    margin-top: 10px;
+}
+
+.popup-close {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    cursor: pointer;
+}

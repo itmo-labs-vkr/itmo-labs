@@ -7,7 +7,6 @@ export const process = (layer: BaseLayer) => {
         (component) => component.type === config.entry,
     );
     const queue = [[undefined, entry?.id()]] as [string | undefined, string][];
-
     const used: Record<string, true> = {};
 
     while (queue.length) {
@@ -23,6 +22,7 @@ export const process = (layer: BaseLayer) => {
         const prevResult = from ? layer.equipments[from].physics.compute() : {};
 
         component.physics.feed(prevResult);
+        component.activate();
 
         document.body.append(
             document.createTextNode(JSON.stringify(component.physics.compute(), null, 4)),

@@ -12,7 +12,5 @@ export function run(this: BaseLayer) {
 
             return;
         }
-
-        console.error(error);
     }
 }

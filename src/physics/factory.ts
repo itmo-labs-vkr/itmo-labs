@@ -1,15 +1,15 @@
-import {PhysicsNotation} from '@labs/server';
+import {PhysicsNotation} from '@labs/server' /* (1) */;
 import type {Inputs, Outputs, ProcessedPhysics} from './types';
-const math = require('mathjs');
+
+const math = require('mathjs'); /* (2) */
 
 export const create = <T extends PhysicsNotation>(notation: T): ProcessedPhysics<T> => {
     const values: Partial<Inputs<T>> = {};
-    const feed = (updateWith: Partial<Inputs<T>>) => {
+    const feed /* (3) */ = (updateWith: Partial<Inputs<T>>) => {
         Object.assign(values, updateWith);
     };
 
-    /* @todo cache values */
-    const compute = (): Partial<Outputs<T>> => {
+    const compute /* (4) */ = (): Partial<Outputs<T>> => {
         const targets = Object.entries(notation.produces);
         const scope = {
             ...notation.constants,
@@ -19,6 +19,7 @@ export const create = <T extends PhysicsNotation>(notation: T): ProcessedPhysics
 
         const result: Record<string, number | undefined> = {};
 
+        /* (5) */
         for (const [name, formula] of targets) {
             try {
                 result[name] = math.evaluate(formula, scope) as number | undefined;
@@ -27,8 +28,10 @@ export const create = <T extends PhysicsNotation>(notation: T): ProcessedPhysics
             }
         }
 
+        Object.assign(values, result);
+
         return result as Outputs<T>;
     };
 
-    return {feed, compute};
+    return {feed, compute, values};
 };

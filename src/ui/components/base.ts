@@ -138,7 +138,6 @@ class BaseComponent<Props extends {} = RequiredProps, State extends {} | undefin
     }
 
     resetPosition() {
-        console.log(this._initial);
         this.x(this._initial?.x ?? 0).y(this._initial?.y ?? 0);
     }
 
@@ -212,7 +211,7 @@ class BaseComponent<Props extends {} = RequiredProps, State extends {} | undefin
     }
 
     build(): Konva.Group {
-        throw new Error('Method build should be implemented in child class');
+        throw new Error('Method `build` should be implemented in child class');
     }
 
     unmount(): void {

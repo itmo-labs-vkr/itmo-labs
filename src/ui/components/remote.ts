@@ -6,6 +6,8 @@ import {BaseComponent} from './base';
 import {Picture} from './picture';
 import {Cell} from './cell';
 import {ProcessedPhysics, create} from 'physics';
+import {HTMLOutput} from './html';
+import {compose} from '@labs/utils';
 
 type RemoteProps = {
     name: string;
@@ -18,7 +20,9 @@ class RemoteComponent extends BaseComponent<EquipmentEntity & RemoteProps> {
     physics: ProcessedPhysics;
     type: string;
 
+    private _picture!: Picture;
     private _renderedPorts: Cell[] = [];
+    private _output!: HTMLOutput;
 
     constructor({name, onDragEnd}: RemoteProps) {
         const props = state.remote(name);
@@ -64,14 +68,42 @@ class RemoteComponent extends BaseComponent<EquipmentEntity & RemoteProps> {
 
             this._renderedPorts.length = 0;
         });
+
+        this.registerCallback('mouseover', () => {
+            const position = compose(
+                this.getAbsolutePosition(),
+                this.getRelativePointerPosition()!,
+                {x: 5, y: 5},
+            );
+
+            this._output = new HTMLOutput({
+                title: this._props.title,
+                values: this.physics.values,
+            });
+
+            this._output.render(position);
+        });
+
+        this.registerCallback('mouseleave', () => {
+            this._output.unmount();
+        });
     }
 
     build() {
         const {src} = this._props;
 
-        this.render(new Picture({src: src.base, width: this.width(), height: this.height()}));
+        this._picture = new Picture({src: src.base, width: this.width(), height: this.height()});
+        this.render(this._picture);
 
         return this;
+    }
+
+    activate() {
+        if (!this._props.src.active) {
+            return;
+        }
+
+        this._picture.image(this._props.src.active);
     }
 
     renderPorts() {
@@ -97,6 +129,13 @@ class RemoteComponent extends BaseComponent<EquipmentEntity & RemoteProps> {
 
                     this._renderedPorts.push(cell);
                     cell.fill('red');
+
+                    const owner = cell.owner();
+
+                    if (owner) {
+                        state.connect(this, owner);
+                    }
+
                     cell.borrow(this);
                 }
             } catch {}

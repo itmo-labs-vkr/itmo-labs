@@ -22,4 +22,18 @@ const isDev = () => {
     return import.meta.env.DEV;
 };
 
-export {random, unique, assert, resize, isDev, extract};
+const compose = (...args: Point2D[]): Point2D => {
+    return args.reduce(
+        (acc, curr) => {
+            return {
+                x: acc.x + curr.x,
+                y: acc.y + curr.y,
+            };
+        },
+        {x: 0, y: 0},
+    );
+};
+
+const noop = () => {};
+
+export {random, unique, assert, resize, isDev, extract, noop, compose};

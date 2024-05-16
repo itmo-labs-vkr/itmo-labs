@@ -11,4 +11,5 @@ export type Outputs<T extends PhysicsNotation> = {
 export type ProcessedPhysics<T extends PhysicsNotation = any> = {
     feed(inputs: Partial<Inputs<T>>): void;
     compute(): Outputs<T>;
+    values: unknown;
 };

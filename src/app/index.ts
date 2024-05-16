@@ -17,12 +17,25 @@ class App {
     config: Config;
     sizes!: Record<'workspace' | 'equipment' | 'empty', {width: number; height: number}>;
 
-    workLayer!: BaseLayer;
+    rootLayer!: Konva.Layer;
+    workLayer!: WorkLayer;
     equipmentLayer!: BaseLayer;
 
     constructor(config: Config) {
         this.root = new Konva.Stage(config);
         this.config = config;
+
+        this.initializeRootLayer();
+    }
+
+    initializeRootLayer() {
+        const {width, height} = this.config;
+
+        const rootLayer = new Konva.Layer({width, height});
+
+        if (!this.rootLayer) {
+            this.rootLayer = rootLayer;
+        }
     }
 
     initializeWorkLayer() {
@@ -73,8 +86,6 @@ class App {
 
         state.set('empty', this.sizes.empty);
 
-        console.log(this.sizes);
-
         this.initializeWorkLayer();
         this.initializeEquipmentLayer();
 
@@ -116,11 +127,11 @@ class App {
     }
 
     async run() {
-        await state.setup(this.config);
+        await state.setup(this.config, this.rootLayer);
 
         this.scale(this.config.width, this.config.height);
 
-        this.root.add(this.workLayer, this.equipmentLayer);
+        this.root.add(this.rootLayer, this.workLayer, this.equipmentLayer);
 
         const lamp = new RemoteComponent({
             name: 'lamp',
