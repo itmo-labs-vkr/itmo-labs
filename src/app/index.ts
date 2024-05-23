@@ -1,10 +1,9 @@
 import Konva from 'konva';
 
-import {Button, RemoteComponent} from '@labs/components';
-import {BaseLayer, WorkLayer} from '@labs/layers';
+import {RemoteComponent} from '@labs/components';
+import {EquipmentLayer, WorkLayer} from '@labs/layers';
 import {state} from '@labs/state';
 import {resize} from '@labs/utils';
-import {run} from './run';
 
 type Config = {
     width: number;
@@ -19,7 +18,7 @@ class App {
 
     rootLayer!: Konva.Layer;
     workLayer!: WorkLayer;
-    equipmentLayer!: BaseLayer;
+    equipmentLayer!: EquipmentLayer;
 
     constructor(config: Config) {
         this.root = new Konva.Stage(config);
@@ -52,7 +51,15 @@ class App {
 
     initializeEquipmentLayer() {
         const {width, height} = this.sizes.equipment;
-        const equipmentLayer = new BaseLayer({width, height});
+        const equipmentLayer = new EquipmentLayer({
+            width,
+            height,
+            onDragEnd: this.handleComponentLanded.bind(this),
+            startX: 1,
+            startY: 1,
+            xAxis: 1,
+            yAxis: 1,
+        });
 
         if (!this.equipmentLayer) {
             this.equipmentLayer = equipmentLayer;
@@ -67,11 +74,11 @@ class App {
 
         const layers = {
             workspace: {
-                width: resize(width * 0.7, cell.width),
+                width: resize(width * 0.6, cell.width),
                 height: resize(height, cell.height),
             },
             equipment: {
-                width: resize(width * 0.25, cell.width),
+                width: resize(width * 0.35, cell.width),
                 height: resize(height, cell.height),
             },
         };
@@ -133,27 +140,7 @@ class App {
 
         this.root.add(this.rootLayer, this.workLayer, this.equipmentLayer);
 
-        const lamp = new RemoteComponent({
-            name: 'lamp',
-            onDragEnd: this.handleComponentLanded.bind(this),
-        });
-
-        lamp.attach(this.equipmentLayer, [2, 4]);
-        lamp.renderPorts();
-
-        const battery = new RemoteComponent({
-            name: 'battery',
-            onDragEnd: this.handleComponentLanded.bind(this),
-        });
-
-        battery.attach(this.equipmentLayer, [2, 10]);
-        battery.renderPorts();
-
-        const runButton = new Button({text: 'Запустить работу', measure: [4, 2]});
-
-        runButton.registerCallback('click', run.bind(this.workLayer));
-
-        runButton.attach(this.equipmentLayer, [0, 0]);
+        this.equipmentLayer.renderEquipemnt();
     }
 }
 

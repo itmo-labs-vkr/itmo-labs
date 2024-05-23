@@ -128,7 +128,7 @@ class RemoteComponent extends BaseComponent<EquipmentEntity & RemoteProps> {
                     // coz some ports can overflow screen
 
                     this._renderedPorts.push(cell);
-                    cell.fill('red');
+                    // cell.fill('red');
 
                     const owner = cell.owner();
 

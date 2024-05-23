@@ -19,6 +19,7 @@ export type PhysicsNotation = {
 
 export type EquipmentEntity = {
     title?: string;
+    count?: number;
     measure: [number, number];
     ports?: EquipmentPort[];
     src: {

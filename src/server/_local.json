@@ -1,48 +1,66 @@
 {
   "cell": {
-    "width": 25,
-    "height": 25
+    "width": 18,
+    "height": 18
   },
   "equipment": {
-    "lamp": {
-      "title": "Лампа",
-      "measure": [3, 3],
-      "ports": [
-        { "position": [0, 2] },
-        { "position": [4, 2] }
-      ],
+    "receiver": {
+      "title": "Ресивер",
+      "measure": [14, 8],
       "src": {
-        "base": "https://res.cloudinary.com/dk-find-out/image/upload/q_80,w_960,f_auto/Electrical-symbol-bulb_znawrt.jpg",
-        "active": "https://storage.yandexcloud.net/itmo-labs-assets/equipment/lamp_active.png"
+        "base": "https://storage.yandexcloud.net/itmo-labs-assets/assets/receiver.png"
       },
-      "physics": {
-        "dependsOf": ["U", "R"],
-        "produces": {
-          "I": "U / R"
-        }
-      }
+      "ports": [
+        { "position": [12, 0] },
+        { "position": [3, 0] }
+      ]
     },
-    "battery": {
-      "title": "Батарея",
-      "measure": [3, 3],
-      "ports": [
-        { "position": [0, 2] },
-        { "position": [4, 2] }
-      ],
-      "src": {
-        "base": "https://w7.pngwing.com/pngs/633/475/png-transparent-electronic-symbol-wiring-diagram-battery-electricity-property-element-miscellaneous-angle-rectangle.png"
-      },
-      "physics": {
-        "initial": {
-          "U": 220,
-          "R": 4
+    "chamber": {
+        "title": "Камера",
+        "count": 2,
+        "measure": [3, 4],
+        "src": {
+          "base": "https://storage.yandexcloud.net/itmo-labs-assets/assets/chamber.png"
         },
-        "produces": {
-          "U": "U",
-          "R": "R"
-        }
+        "ports": [
+          { "position": [2, 0] },
+          { "position": [2, 5] }
+        ]
+      },
+      "valve": {
+        "title": "Вентиль",
+        "measure": [3, 4],
+        "src": {
+          "base": "https://storage.yandexcloud.net/itmo-labs-assets/assets/valve.png"
+        },
+        "ports": [
+          { "position": [1, 0] },
+          { "position": [1, 5] }
+        ]
+      },
+      "nozzle": {
+        "title": "Вентиль",
+        "measure": [3, 4],
+        "src": {
+          "base": "https://storage.yandexcloud.net/itmo-labs-assets/assets/nozzle.png"
+        },
+        "ports": [
+          { "position": [2, 0] },
+          { "position": [2, 5] }
+        ]
+      },
+      "compressor": {
+        "title": "Вентиль",
+        "measure": [7, 4],
+        "src": {
+          "base": "https://storage.yandexcloud.net/itmo-labs-assets/assets/compressor.png"
+        },
+        "ports": [
+          { "position": [0, 1] },
+          { "position": [8, 1] }
+        ]
       }
-    }
+     
   },
   "proofOfDone": {
     "required": ["lamp", "battery"],

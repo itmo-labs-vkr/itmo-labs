@@ -8,15 +8,17 @@ type OutlineConfig = {
     color: string;
 };
 
-class BaseLayer extends Konva.Layer {
+class BaseLayer<
+    T extends RequireGeometry<Konva.LabelConfig> = RequireGeometry<Konva.LabelConfig>,
+> extends Konva.Layer {
     equipments: Record<string, RemoteComponent> = {};
 
     protected _cells: Cell[][] = [];
+    protected _props: T;
 
     private _frame: Konva.Rect;
-    private _props: RequireGeometry<Konva.LabelConfig>;
 
-    constructor(props: RequireGeometry<Konva.LabelConfig>) {
+    constructor(props: T) {
         super(props);
 
         this._props = props;

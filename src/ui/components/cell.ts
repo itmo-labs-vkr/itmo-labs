@@ -46,7 +46,7 @@ class Cell extends BaseComponent<{}, CellState> {
             component,
         };
 
-        this.fill(component ? 'red' : 'white');
+        // this.fill(component ? 'red' : 'white');
     }
 
     owner() {
